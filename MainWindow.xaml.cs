@@ -25,11 +25,13 @@ namespace TicTacToe
                 {
                     DrawX(button);
                     button.Tag = "X";
+                    //button.Content = "X";
                 }
                 else
                 {
                     DrawO(button);
                     button.Tag = "O";
+                    //button.Content = "O";
                 }
 
                 // Проверка на победу
@@ -53,26 +55,19 @@ namespace TicTacToe
         private bool CheckForWin()
         {
             // Проверка строк
-            for (int i = 0; i < 3; i++)
-            {
-                if (CheckLine(btn1.Content, btn2.Content, btn3.Content)) return true;
-                if (CheckLine(btn4.Content, btn5.Content, btn6.Content)) return true;
-                if (CheckLine(btn7.Content, btn8.Content, btn9.Content)) return true;
-            }
-
             // Проверка столбцов
-            for (int i = 0; i < 3; i++)
-            {
-                if (CheckLine(btn1.Content, btn4.Content, btn7.Content)) return true;
-                if (CheckLine(btn2.Content, btn5.Content, btn8.Content)) return true;
-                if (CheckLine(btn3.Content, btn6.Content, btn9.Content)) return true;
-            }
-
             // Проверка диагоналей
-            if (CheckLine(btn1.Content, btn5.Content, btn9.Content)) return true;
-            if (CheckLine(btn3.Content, btn5.Content, btn7.Content)) return true;
+            if (CheckLine(btn1.Tag, btn2.Tag, btn3.Tag)
+                || CheckLine(btn4.Tag, btn5.Tag, btn6.Tag)
+                || CheckLine(btn7.Tag, btn8.Tag, btn9.Tag)
+                || CheckLine(btn1.Tag, btn4.Tag, btn7.Tag)
+                || CheckLine(btn2.Tag, btn5.Tag, btn8.Tag)
+                || CheckLine(btn3.Tag, btn6.Tag, btn9.Tag)
+                || CheckLine(btn1.Tag, btn5.Tag, btn9.Tag)
+                || CheckLine(btn3.Tag, btn5.Tag, btn7.Tag))
+                return true;
 
-            return false;
+                return false;
         }
 
         private bool CheckLine(object content1, object content2, object content3)
@@ -107,6 +102,7 @@ namespace TicTacToe
             Grid grid = new Grid();
             grid.Width = button.ActualWidth;
             grid.Height = button.ActualHeight;
+            grid.Margin = new Thickness(-5);
 
             Line line1 = new Line();
             line1.Stroke = Brushes.Red;
@@ -129,24 +125,25 @@ namespace TicTacToe
             button.Content = grid;
 
             // Анимация рисования крестика
-            DoubleAnimation line11Animate = new DoubleAnimation(0, button.ActualWidth, TimeSpan.FromSeconds(1));
-            line1.BeginAnimation(Line.X2Property, line11Animate);
-            DoubleAnimation line12Animate = new DoubleAnimation(0, button.ActualHeight, TimeSpan.FromSeconds(1));
-            line1.BeginAnimation(Line.Y2Property, line12Animate);
-
-            DoubleAnimation line21Animate = new DoubleAnimation(button.ActualWidth, 0, TimeSpan.FromSeconds(1));
-            line2.BeginAnimation(Line.X1Property, line21Animate);
-            DoubleAnimation line22Animate = new DoubleAnimation(0, button.ActualHeight, TimeSpan.FromSeconds(1));
-            line2.BeginAnimation(Line.Y1Property, line22Animate);
-
+            AnimateLines(line1, 0, button.ActualWidth, Line.X2Property);
+            AnimateLines(line1, 0, button.ActualHeight, Line.Y2Property);
             await Task.Delay(1000); // Задержка для завершения анимации
+            AnimateLines(line2, button.ActualWidth, 0, Line.X1Property);
+            AnimateLines(line2, 0, button.ActualHeight, Line.Y1Property);
+        }
+
+        public void AnimateLines(Line line, double corner1, double corner2, DependencyProperty property)
+        {
+            DoubleAnimation lineAnimate = new DoubleAnimation(corner1, corner2, TimeSpan.FromSeconds(1));
+            line.BeginAnimation(property, lineAnimate);
         }
 
         private void DrawO(Button button)
         {
             Ellipse ellipse = new Ellipse();
             ellipse.Stroke = Brushes.Blue;
-            ellipse.Fill = Brushes.White;
+            ellipse.Fill = Brushes.Transparent;
+            ellipse.StrokeThickness = 5;
             ellipse.Width = button.ActualWidth - 20;
             ellipse.Height = button.ActualHeight - 20;
             ellipse.Margin = new Thickness(5);
