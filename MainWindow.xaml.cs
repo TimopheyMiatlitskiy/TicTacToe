@@ -8,7 +8,7 @@ namespace TicTacToe
 {
     public partial class MainWindow : Window
     {
-        private bool playerX = true; // Переменная для хранения текущего игрока (true - X, false - O)
+        private bool player = true; // Переменная для хранения текущего игрока (true - X, false - O)
 
         public MainWindow()
         {
@@ -21,7 +21,7 @@ namespace TicTacToe
 
             if (button.Content == null)
             {
-                if (playerX)
+                if (player)
                 {
                     DrawX(button);
                     button.Tag = "X";
@@ -37,7 +37,7 @@ namespace TicTacToe
                 // Проверка на победу
                 if (CheckForWin())
                 {
-                    MessageBox.Show((playerX ? "X" : "O") + " wins!");
+                    MessageBox.Show((player ? "X" : "O") + " wins!");
                     ResetBoard();
                 }
 
@@ -48,7 +48,7 @@ namespace TicTacToe
                     ResetBoard();
                 }
 
-                playerX = !playerX;
+                player = !player;
             }
         }
 
@@ -79,7 +79,7 @@ namespace TicTacToe
         {
             foreach (var control in gameGrid.Children)
             {
-                if (control is Button button && button.Content == null)
+                if (control is Button button && button.Tag == null)
                 {
                     return false;
                 }
@@ -94,6 +94,7 @@ namespace TicTacToe
                 if (control is Button button)
                 {
                     button.Content = null;
+                    button.Tag = null;
                 }
             }
         }
@@ -142,13 +143,37 @@ namespace TicTacToe
         {
             Ellipse ellipse = new Ellipse();
             ellipse.Stroke = Brushes.Blue;
-            ellipse.Fill = Brushes.Transparent;
             ellipse.StrokeThickness = 5;
             ellipse.Width = button.ActualWidth - 20;
             ellipse.Height = button.ActualHeight - 20;
             ellipse.Margin = new Thickness(5);
 
             button.Content = ellipse;
+
+            DoubleAnimation widthAnimation = new DoubleAnimation();
+            widthAnimation.From = 0;
+            widthAnimation.To = button.ActualWidth - 20;
+            widthAnimation.Duration = new Duration(TimeSpan.FromSeconds(1));
+
+            DoubleAnimation heightAnimation = new DoubleAnimation();
+            heightAnimation.From = 0;
+            heightAnimation.To = button.ActualHeight - 20;
+            heightAnimation.Duration = new Duration(TimeSpan.FromSeconds(1));
+
+            ellipse.BeginAnimation(Ellipse.WidthProperty, widthAnimation);
+            ellipse.BeginAnimation(Ellipse.HeightProperty, heightAnimation);
+
+            DoubleAnimation rotationAnimation = new DoubleAnimation();
+            rotationAnimation.From = 0;
+            rotationAnimation.To = 360;
+            rotationAnimation.RepeatBehavior = RepeatBehavior.Forever;
+            rotationAnimation.Duration = new Duration(TimeSpan.FromSeconds(2));
+
+            RotateTransform transform = new RotateTransform();
+            ellipse.RenderTransform = transform;
+
+            transform.BeginAnimation(RotateTransform.AngleProperty, rotationAnimation);
         }
+
     }
 }
