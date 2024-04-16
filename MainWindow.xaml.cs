@@ -108,29 +108,29 @@ namespace TicTacToe
             Line line1 = new Line();
             line1.Stroke = Brushes.Red;
             line1.StrokeThickness = 5;
-            line1.X1 = 0;
-            line1.Y1 = 0;
-            line1.X2 = 0;
-            line1.Y2 = 0;
+            line1.X1 = 10;
+            line1.Y1 = 10;
+            line1.X2 = 10;
+            line1.Y2 = 10;
             grid.Children.Add(line1);
 
             Line line2 = new Line();
             line2.Stroke = Brushes.Red;
             line2.StrokeThickness = 5;
-            line2.X1 = button.ActualWidth;
-            line2.Y1 = 0;
-            line2.X2 = button.ActualWidth;
-            line2.Y2 = 0;
+            line2.X1 = button.ActualWidth-10;
+            line2.Y1 = 10;
+            line2.X2 = button.ActualWidth-10;
+            line2.Y2 = 10;
             grid.Children.Add(line2);
 
             button.Content = grid;
 
             // Анимация рисования крестика
-            AnimateLines(line1, 0, button.ActualWidth, Line.X2Property);
-            AnimateLines(line1, 0, button.ActualHeight, Line.Y2Property);
+            AnimateLines(line1, 10, button.ActualWidth-10, Line.X2Property);
+            AnimateLines(line1, 10, button.ActualHeight-10, Line.Y2Property);
             await Task.Delay(1000); // Задержка для завершения анимации
-            AnimateLines(line2, button.ActualWidth, 0, Line.X1Property);
-            AnimateLines(line2, 0, button.ActualHeight, Line.Y1Property);
+            AnimateLines(line2, button.ActualWidth - 10, 10, Line.X1Property);
+            AnimateLines(line2, 10, button.ActualHeight-10, Line.Y1Property);
         }
 
         public void AnimateLines(Line line, double corner1, double corner2, DependencyProperty property)
@@ -144,8 +144,8 @@ namespace TicTacToe
             Ellipse ellipse = new Ellipse();
             ellipse.Stroke = Brushes.Blue;
             ellipse.StrokeThickness = 5;
-            ellipse.Width = button.ActualWidth - 20;
-            ellipse.Height = button.ActualHeight - 20;
+            ellipse.Width = button.ActualWidth;
+            ellipse.Height = button.ActualHeight;
             ellipse.Margin = new Thickness(5);
 
             button.Content = ellipse;
@@ -157,22 +157,22 @@ namespace TicTacToe
 
             DoubleAnimation heightAnimation = new DoubleAnimation();
             heightAnimation.From = 0;
-            heightAnimation.To = button.ActualHeight - 20;
+            heightAnimation.To = button.ActualHeight - 15;
             heightAnimation.Duration = new Duration(TimeSpan.FromSeconds(1));
 
             ellipse.BeginAnimation(Ellipse.WidthProperty, widthAnimation);
             ellipse.BeginAnimation(Ellipse.HeightProperty, heightAnimation);
 
-            DoubleAnimation rotationAnimation = new DoubleAnimation();
-            rotationAnimation.From = 0;
-            rotationAnimation.To = 360;
-            rotationAnimation.RepeatBehavior = RepeatBehavior.Forever;
-            rotationAnimation.Duration = new Duration(TimeSpan.FromSeconds(2));
+            //DoubleAnimation rotationAnimation = new DoubleAnimation();
+            //rotationAnimation.From = 0;
+            //rotationAnimation.To = 360;
+            //rotationAnimation.RepeatBehavior = RepeatBehavior.Forever;
+            //rotationAnimation.Duration = new Duration(TimeSpan.FromSeconds(2));
 
-            RotateTransform transform = new RotateTransform();
-            ellipse.RenderTransform = transform;
+            //RotateTransform transform = new RotateTransform();
+            //ellipse.RenderTransform = transform;
 
-            transform.BeginAnimation(RotateTransform.AngleProperty, rotationAnimation);
+            //transform.BeginAnimation(RotateTransform.AngleProperty, rotationAnimation);
         }
 
     }
